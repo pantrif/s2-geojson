@@ -12,7 +12,7 @@ func NewRouter() *gin.Engine {
 
 	r := gin.Default()
 	r.GET("/health", health.Status)
-	r.LoadHTMLGlob("website/*.html")
+	r.LoadHTMLGlob("./website/*.html")
 	r.Static("/js", "./website/js")
 	r.Static("/css", "./website/css")
 	r.GET("/", func(c *gin.Context) {
