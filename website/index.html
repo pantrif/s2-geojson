@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S2 geojson</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+    <script src="js/codemirror.min.js"></script>
+    <link rel="stylesheet" href="css/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="css/spectre.min.css">
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/lib.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="columns">
+
+        <div class="map-wrapper column col-8 col-lg-8 col-md-6 col-sm-4">
+            <div id="map"></div>
+        </div>
+
+        <div class="controls-wrapper column col-4 col-lg-4 col-md-6 col-sm-8">
+
+            <div class="info">
+                <p id="intersects_with_point">-</p>
+                <p id="intersects_with_circle">-</p>
+                <p id="latlng">-</p>
+            </div>
+
+            <input type="radio" id="tab1" name="tabs" class="tab-locator" hidden checked />
+            <input type="radio" id="tab2" name="tabs" class="tab-locator" hidden />
+
+            <ul class="tab tab-block">
+                <li class="tab-item"><label for="tab1"><a>JSON</a></label></li>
+                <li class="tab-item"><label for="tab2"><a>Marker Options</a></label></li>
+            </ul>
+
+
+            <div class="tabs">
+                <div class="tab-content">
+                    <div class="form-group">
+                        <label class="form-label" for="max_level_geojson">Max Level: <span id="max_level_geojson_value"></span></label>
+                        <input type="range" class="range_input" name="max_level_geojson" id="max_level_geojson" value="12" min="1" max="30"><br>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="min_level_geojson">Min Level: <span id="min_level_geojson_value"></span></label>
+                        <input type="range" class="range_input" name="min_level_geojson" id="min_level_geojson" value="1" min="1" max="30"><br>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="geoJsonInput">Geojson collection</label>
+                        <textarea class="form-input" id="geoJsonInput"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cell_tokens">Tokens</label>
+                        <input class="form-input" id="cell_tokens" type="text"/><br>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="max_level_circle">Max Level for for circle: <span id="max_level_circle_value"></span></label>
+                        <input type="range" class="range_input" name="max_level_circle" id="max_level_circle" value="12" min="1" max="30"><br>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="radius">Circle radius in meters (disable with zero)</label>
+                        <input class="form-input" type="number" name="radius" id="radius" value="3000" min="0" ><br>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
