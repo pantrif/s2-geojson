@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
-	"s2-geojson/pkg/geo"
+	"s2_geojson/pkg/geo"
 	"strconv"
 	"strings"
 )
