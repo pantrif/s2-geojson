@@ -1,4 +1,4 @@
-module github.com/pantrif/s2_geojson
+module s2_geojson
 
 go 1.13
 
