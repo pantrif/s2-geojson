@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"s2_geojson/internal/app/server"
+	"github.com/pantrif/s2_geojson/internal/app/server"
 )
 
 const (
