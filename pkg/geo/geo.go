@@ -1,7 +1,6 @@
 package geo
 
 import (
-	"errors"
 	"github.com/golang/geo/s2"
 	"github.com/paulmach/go.geojson"
 )
@@ -22,23 +21,6 @@ func DecodeGeoJSON(json []byte) ([]*geojson.Feature, error) {
 		return nil, err
 	}
 	return f.Features, nil
-}
-
-func UnmarshalGeoJSON(json []byte) ([][]float64, error) {
-	fc, err := geojson.UnmarshalFeatureCollection(json)
-	if err != nil {
-		return nil, err
-	}
-	for _, f := range fc.Features {
-		if !f.Geometry.IsPolygon() {
-			return nil, errors.New("only polygon and point types supported")
-		}
-		for _, p := range f.Geometry.Polygon {
-			return p, nil
-		}
-
-	}
-	return nil, errors.New("cannot find the polygon")
 }
 
 func GeoJSONPointsToPolygon(points [][]float64) *s2.Polygon {

@@ -1,8 +1,8 @@
 package server
 
 // Init initializes the router
-func Init() error {
-	r := NewRouter()
+func Init(webPath string) error {
+	r := NewRouter(webPath)
 	err := r.Run()
 	if err != nil {
 		return err
