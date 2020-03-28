@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/pantrif/s2-geojson.svg?branch=develop)](https://travis-ci.com/pantrif/s2-geojson)
 [![GoDoc](https://godoc.org/github.com/pantrif/s2-geojson?status.png)](http://godoc.org/github.com/pantrif/s2-geojson)
 [![Go Report Card](https://goreportcard.com/badge/github.com/pantrif/s2-geojson)](https://goreportcard.com/report/github.com/pantrif/s2-geojson)
+[![codecov](https://codecov.io/gh/pantrif/s2-geojson/branch/develop/graph/badge.svg)](https://codecov.io/gh/pantrif/s2-geojson)
 
 
 # s2-geojson
