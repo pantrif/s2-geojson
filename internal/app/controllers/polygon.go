@@ -32,7 +32,7 @@ func (u PolygonController) Cover(c *gin.Context) {
 
 		if f.Geometry.IsPolygon() {
 			for _, p := range f.Geometry.Polygon {
-				p := geo.GeoJSONPointsToPolygon(p)
+				p := geo.PointsToPolygon(p)
 				_, t, c := geo.CoverPolygon(p, maxLevel, minLevel)
 				s2cells = append(s2cells, c...)
 				tokens = append(tokens, t...)
@@ -105,7 +105,7 @@ func (u PolygonController) CheckIntersection(c *gin.Context) {
 
 		if f.Geometry.IsPolygon() {
 			for _, p := range f.Geometry.Polygon {
-				p := geo.GeoJSONPointsToPolygon(p)
+				p := geo.PointsToPolygon(p)
 				covering, _, _ := geo.CoverPolygon(p, maxLevel, minLevel)
 
 				if covering.IntersectsCell(cell) {
