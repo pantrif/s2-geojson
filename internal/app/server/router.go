@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"s2_geojson/internal/app/controllers"
+	"s2-geojson/internal/app/controllers"
 )
 
 // NewRouter setups all gin routes, templates & static files

@@ -1,4 +1,4 @@
-module s2_geojson
+module s2-geojson
 
 go 1.13
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"s2_geojson/internal/app/server"
+	"s2-geojson/internal/app/server"
 )
 
 const (
