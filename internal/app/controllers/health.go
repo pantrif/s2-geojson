@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HealthController struct
 type HealthController struct{}
 
 // Status checks the status of the service

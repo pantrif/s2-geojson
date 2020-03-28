@@ -9,14 +9,16 @@ import (
 	"strings"
 )
 
-type PolygonController struct{}
+// GeoController struct
+type GeoController struct{}
 
-func (u PolygonController) Cover(c *gin.Context) {
-	gJson := []byte(c.PostForm("geojson"))
+// Cover uses s2 region coverer to cover geometries of geojson (only points and polygons supported)
+func (u GeoController) Cover(c *gin.Context) {
+	gJSON := []byte(c.PostForm("geojson"))
 	maxLevel, err := strconv.Atoi(c.PostForm("max_level_geojson"))
 	minLevel, err := strconv.Atoi(c.PostForm("min_level_geojson"))
 
-	fs, err := geo.DecodeGeoJSON(gJson)
+	fs, err := geo.DecodeGeoJSON(gJSON)
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -53,18 +55,18 @@ func (u PolygonController) Cover(c *gin.Context) {
 	})
 }
 
-func (u PolygonController) CheckIntersection(c *gin.Context) {
+// CheckIntersection checks intersection of geoJSON geometries with a point and with a circle
+func (u GeoController) CheckIntersection(c *gin.Context) {
 	lat, err := strconv.ParseFloat(c.PostForm("lat"), 64)
 	lng, err := strconv.ParseFloat(c.PostForm("lng"), 64)
 	radius, err := strconv.ParseFloat(c.PostForm("radius"), 64)
 
-	gJson := []byte(c.PostForm("geojson"))
+	gJSON := []byte(c.PostForm("geojson"))
 	maxLevel, err := strconv.Atoi(c.PostForm("max_level_geojson"))
 	minLevel, err := strconv.Atoi(c.PostForm("min_level_geojson"))
 	maxLevelCircle, err := strconv.Atoi(c.PostForm("max_level_circle"))
 
-	//points, err := geo.UnmarshalGeoJSON(gjson)
-	fs, err := geo.DecodeGeoJSON(gJson)
+	fs, err := geo.DecodeGeoJSON(gJSON)
 
 	if err != nil {
 		c.JSON(400, gin.H{

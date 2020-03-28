@@ -6,9 +6,10 @@ import (
 	"s2-geojson/internal/app/controllers"
 )
 
+// NewRouter setups all gin routes, templates & static files
 func NewRouter(root string) *gin.Engine {
 	health := new(controllers.HealthController)
-	p := new(controllers.PolygonController)
+	p := new(controllers.GeoController)
 
 	r := gin.Default()
 	r.GET("/health", health.Status)

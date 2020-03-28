@@ -6,10 +6,12 @@ import (
 )
 
 const (
+	//EarthRadius the radius of earth in kilometers
 	EarthRadius = 6371.01
 	maxCells    = 100
 )
 
+// Point struct contains the lat/lng of a point
 type Point struct {
 	Lat float64
 	Lng float64

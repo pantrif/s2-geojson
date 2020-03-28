@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var validJson = []byte(`
+var validJSON = []byte(`
 {
   "type": "FeatureCollection",
   "features": [
@@ -41,7 +41,7 @@ var validJson = []byte(`
 `)
 
 func TestDecodeGeoJSON(t *testing.T) {
-	r, err := DecodeGeoJSON(validJson)
+	r, err := DecodeGeoJSON(validJSON)
 	assert.NoError(t, err)
 	assert.True(t, r[0].Geometry.IsPolygon())
 
@@ -50,7 +50,7 @@ func TestDecodeGeoJSON(t *testing.T) {
 }
 
 func TestPointsToPolygon(t *testing.T) {
-	r, err := DecodeGeoJSON(validJson)
+	r, err := DecodeGeoJSON(validJSON)
 	assert.NoError(t, err)
 	assert.True(t, r[0].Geometry.IsPolygon())
 
@@ -59,7 +59,7 @@ func TestPointsToPolygon(t *testing.T) {
 }
 
 func TestCoverPolygon(t *testing.T) {
-	f, _ := DecodeGeoJSON(validJson)
+	f, _ := DecodeGeoJSON(validJSON)
 	p := PointsToPolygon(f[0].Geometry.Polygon[0])
 
 	u, tk, c := CoverPolygon(p, 4, 1)
