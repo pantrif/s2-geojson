@@ -9,7 +9,7 @@ import (
 // NewRouter setups all gin routes, templates & static files
 func NewRouter(root string) *gin.Engine {
 	health := new(controllers.HealthController)
-	p := new(controllers.GeoController)
+	p := new(controllers.GeometryController)
 
 	r := gin.Default()
 	r.GET("/health", health.Status)

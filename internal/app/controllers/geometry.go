@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-// GeoController struct
-type GeoController struct{}
+// GeometryController struct
+type GeometryController struct{}
 
 // Cover uses s2 region coverer to cover geometries of geojson (only points and polygons supported)
-func (u GeoController) Cover(c *gin.Context) {
+func (u GeometryController) Cover(c *gin.Context) {
 	gJSON := []byte(c.PostForm("geojson"))
 	maxLevel, err := strconv.Atoi(c.PostForm("max_level_geojson"))
 	minLevel, err := strconv.Atoi(c.PostForm("min_level_geojson"))
@@ -56,7 +56,7 @@ func (u GeoController) Cover(c *gin.Context) {
 }
 
 // CheckIntersection checks intersection of geoJSON geometries with a point and with a circle
-func (u GeoController) CheckIntersection(c *gin.Context) {
+func (u GeometryController) CheckIntersection(c *gin.Context) {
 	lat, err := strconv.ParseFloat(c.PostForm("lat"), 64)
 	lng, err := strconv.ParseFloat(c.PostForm("lng"), 64)
 	radius, err := strconv.ParseFloat(c.PostForm("radius"), 64)
