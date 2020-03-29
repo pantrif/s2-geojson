@@ -45,6 +45,17 @@ var validJSON = []byte(`
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.86610642636226,
+          21.24842223562702
+        ]
+      }
     }
   ]
 }
