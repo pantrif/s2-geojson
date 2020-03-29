@@ -1,17 +1,22 @@
-package controllers
+package controllers_test
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pantrif/s2-geojson/internal/app/server"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestStatus(t *testing.T) {
+
 	gin.SetMode(gin.TestMode)
-	h := HealthController{}
+	router := server.NewRouter(root)
 	w := httptest.NewRecorder()
-	c, _ := gin.CreateTestContext(w)
-	h.Status(c)
-	assert.Equal(t, 200, w.Result().StatusCode)
+	req, _ := http.NewRequest("GET", "/health", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, "{\"status\":\"ok\"}\n", w.Body.String())
 }
