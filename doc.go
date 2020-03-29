@@ -1,7 +1,5 @@
 /*
-Package s2 geojson
-
-Convert geojson to s2 cells with region coverer and demonstrating some s2 features on map
+Package s2geojson converts geojson to s2 cells with region coverer and demonstrating some s2 features on map
 
 
   - Display s2 cells on leaflet map using the region coverer.
@@ -10,4 +8,4 @@ Convert geojson to s2 cells with region coverer and demonstrating some s2 featur
   - Check intersection with the geojson features.
 
 */
-package s2_geojson
+package s2geojson
