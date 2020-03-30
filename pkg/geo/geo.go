@@ -49,7 +49,7 @@ func CoverPolygon(p *s2.Polygon, maxLevel, minLevel int) (s2.CellUnion, []string
 	for _, c := range covering {
 		cell := s2.CellFromCellID(s2.CellIDFromToken(c.ToToken()))
 
-		s2cells = append(s2cells, edgesOfCell(cell))
+		s2cells = append(s2cells, EdgesOfCell(cell))
 
 		tokens = append(tokens, c.ToToken())
 	}
@@ -64,12 +64,13 @@ func CoverPoint(p Point, maxLevel int) (s2.Cell, string, [][][]float64) {
 	cell := s2.CellFromCellID(cid)
 	token := cid.ToToken()
 
-	s2cells = append(s2cells, edgesOfCell(cell))
+	s2cells = append(s2cells, EdgesOfCell(cell))
 
 	return cell, token, s2cells
 }
 
-func edgesOfCell(c s2.Cell) [][]float64 {
+// EdgesOfCell gets the edges of the cell
+func EdgesOfCell(c s2.Cell) [][]float64 {
 	var edges [][]float64
 	for i := 0; i < 4; i++ {
 		latLng := s2.LatLngFromPoint(c.Vertex(i))

@@ -87,13 +87,7 @@ func (u GeometryController) CheckIntersection(c *gin.Context) {
 	for _, c := range circleCovering {
 		c1 := s2.CellFromCellID(s2.CellIDFromToken(c.ToToken()))
 
-		var s2cell [][]float64
-		for i := 0; i < 4; i++ {
-			latlng := s2.LatLngFromPoint(c1.Vertex(i))
-			s2cell = append(s2cell, []float64{latlng.Lat.Degrees(), latlng.Lng.Degrees()})
-		}
-
-		s2cells = append(s2cells, s2cell)
+		s2cells = append(s2cells, geo.EdgesOfCell(c1))
 
 		values = append(values, c.ToToken())
 	}
