@@ -80,6 +80,13 @@ let s2_geojson = {
             min_level_geojson_value.innerHTML = this.value;
         };
 
+        document.getElementById("lat").oninput = function() {
+            self.checkPointIntersection();
+        };
+        document.getElementById("lng").oninput = function() {
+            self.checkPointIntersection();
+        };
+
         map.on('click', this.onMapClick);
         geoJsonEditor.on("change", self.onGeoJsonChange);
 
@@ -95,8 +102,17 @@ let s2_geojson = {
     },
     onMapClick : function(e) {
 
-        latlng = e.latlng.toString();
-        document.getElementById("latlng").innerHTML = latlng;
+        let lat = e.latlng.lat;
+        let lng = e.latlng.lng;
+
+        document.getElementById("lat").value = lat;
+        document.getElementById("lng").value = lng;
+
+        self.checkPointIntersection();
+    },
+    checkPointIntersection: function() {
+        let lat = document.getElementById("lat").value;
+        let lng = document.getElementById("lng").value;
 
         if (marker) {
             map.removeLayer(marker)
@@ -104,7 +120,7 @@ let s2_geojson = {
         if (circleLayer) {
             map.removeLayer(circleLayer)
         }
-        marker = L.marker(e.latlng).addTo(map);
+        marker = L.marker([lat, lng]).addTo(map);
 
         let max_level_geojson = document.getElementById("max_level_geojson").value;
         let min_level_geojson = document.getElementById("min_level_geojson").value;
@@ -113,31 +129,34 @@ let s2_geojson = {
         let radius = document.getElementById("radius").value;
 
         if (radius > 0) {
-            circleLayer = L.circle([e.latlng.lat, e.latlng.lng], {radius: radius}).addTo(map);
+            circleLayer = L.circle([lat, lng], {radius: radius}).addTo(map);
         }
 
         self.removeCircleCells();
 
-        let params = "lat=" + e.latlng.lat + "&lng=" + e.latlng.lng + "&min_level_geojson=" + min_level_geojson +  "&max_level_geojson=" + max_level_geojson  + "&max_level_circle=" + max_level_circle + "&radius=" + radius + "&geojson=" + geoJsonEditor.getValue().trim();
-        self.postRequest(params, checkPointUrl, function (response) {
-            let res = JSON.parse(response);
-            let intersectsPointElem = document.getElementById("intersects_with_point");
-            intersectsPointElem.innerHTML = "Features intersects with point: " + res.intersects_with_point;
-            intersectsPointElem.className = "";
-            intersectsPointElem.classList.add(res.intersects_with_point ? "success" : "error");
+        let geoJSON = geoJsonEditor.getValue();
+        if (geoJSON !== '') {
+            let params = "lat=" + lat + "&lng=" + lng + "&min_level_geojson=" + min_level_geojson + "&max_level_geojson=" + max_level_geojson + "&max_level_circle=" + max_level_circle + "&radius=" + radius + "&geojson=" + geoJSON.trim();
+            self.postRequest(params, checkPointUrl, function (response) {
+                let res = JSON.parse(response);
+                let intersectsPointElem = document.getElementById("intersects_with_point");
+                intersectsPointElem.innerHTML = "Features intersects with point: " + res.intersects_with_point;
+                intersectsPointElem.className = "";
+                intersectsPointElem.classList.add(res.intersects_with_point ? "success" : "error");
 
-            let intersectsCircleElem = document.getElementById("intersects_with_circle");
-            intersectsCircleElem.innerHTML = "Features intersects with circle: " + res.intersects_with_circle;
-            intersectsCircleElem.className = "";
-            intersectsCircleElem.classList.add(res.intersects_with_circle ? "success" : "error");
+                let intersectsCircleElem = document.getElementById("intersects_with_circle");
+                intersectsCircleElem.innerHTML = "Features intersects with circle: " + res.intersects_with_circle;
+                intersectsCircleElem.className = "";
+                intersectsCircleElem.classList.add(res.intersects_with_circle ? "success" : "error");
 
-            if (radius > 0) {
-                let s2_cells = res.cells;
-                for (let i = 0; i < s2_cells.length; i++) {
-                    circle_cells.push(L.polygon(s2_cells[i], {color: 'black'}).addTo(map));
+                if (radius > 0) {
+                    let s2_cells = res.cells;
+                    for (let i = 0; i < s2_cells.length; i++) {
+                        circle_cells.push(L.polygon(s2_cells[i], {color: 'black'}).addTo(map));
+                    }
                 }
-            }
-        });
+            });
+        }
     },
     onDrawCreated : function(e) {
         if (geoJsonLayer) {

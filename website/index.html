@@ -33,7 +33,6 @@
             <div class="info">
                 <p id="intersects_with_point">-</p>
                 <p id="intersects_with_circle">-</p>
-                <p id="latlng">-</p>
             </div>
 
             <input type="radio" id="tab1" name="tabs" class="tab-locator" hidden checked />
@@ -67,7 +66,13 @@
                 </div>
 
                 <div class="tab-content">
+                    <div class="form-group">
+                        <label class="label-sm" for="lat">Latitude</label>
+                        <input type="number" class="input-inline" name="lat" id="lat" placeholder="Latitude" step="0.00001" min="-90" max="90">
 
+                        <label class="label-sm" for="lng">Longitude</label>
+                        <input type="number" class="input-inline" name="lng" id="lng" placeholder="Longitude" step="0.00001" min="-180" max="180">
+                    </div>
 
                     <div class="form-group">
                         <label class="form-label" for="max_level_circle">Max Level for for circle: <span id="max_level_circle_value"></span></label>
