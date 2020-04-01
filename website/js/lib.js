@@ -59,11 +59,6 @@ let s2_geojson = {
         max_level_circle_slider.oninput = function() {
             max_level_circle_value.innerHTML = this.value;
         };
-
-        let geoJsonInput = document.getElementById("geoJsonInput");
-        geoJsonInput.oninput = function() {
-            self.GeoJsonToMap();
-        };
         let maxLevelGeoJsonInput = document.getElementById("max_level_geojson");
         let max_level_geojson_value = document.getElementById("max_level_geojson_value");
         max_level_geojson_value.innerHTML = maxLevelGeoJsonInput.value;
@@ -122,8 +117,6 @@ let s2_geojson = {
         }
         marker = L.marker([lat, lng]).addTo(map);
 
-        let max_level_geojson = document.getElementById("max_level_geojson").value;
-        let min_level_geojson = document.getElementById("min_level_geojson").value;
         let max_level_circle = document.getElementById("max_level_circle").value;
 
         let radius = document.getElementById("radius").value;
@@ -134,9 +127,9 @@ let s2_geojson = {
 
         self.removeCircleCells();
 
-        let geoJSON = geoJsonEditor.getValue();
-        if (geoJSON !== '') {
-            let params = "lat=" + lat + "&lng=" + lng + "&min_level_geojson=" + min_level_geojson + "&max_level_geojson=" + max_level_geojson + "&max_level_circle=" + max_level_circle + "&radius=" + radius + "&geojson=" + geoJSON.trim();
+        let tokens = document.getElementById("cell_tokens").value;
+        if (tokens !== '') {
+            let params = "lat=" + lat + "&lng=" + lng  + "&max_level_circle=" + max_level_circle + "&radius=" + radius + "&tokens=" + tokens;
             self.postRequest(params, checkPointUrl, function (response) {
                 let res = JSON.parse(response);
                 let intersectsPointElem = document.getElementById("intersects_with_point");
@@ -183,6 +176,7 @@ let s2_geojson = {
         }
     },
     onGeoJsonChange : function() {
+        document.getElementById("cell_tokens").value = '';
         self.GeoJsonToMap();
     },
     GeoJsonToMap : function() {

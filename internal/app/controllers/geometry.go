@@ -61,12 +61,9 @@ func (u GeometryController) CheckIntersection(c *gin.Context) {
 	lng, err := strconv.ParseFloat(c.PostForm("lng"), 64)
 	radius, err := strconv.ParseFloat(c.PostForm("radius"), 64)
 
-	gJSON := []byte(c.PostForm("geojson"))
-	maxLevel, err := strconv.Atoi(c.PostForm("max_level_geojson"))
-	minLevel, err := strconv.Atoi(c.PostForm("min_level_geojson"))
-	maxLevelCircle, err := strconv.Atoi(c.PostForm("max_level_circle"))
+	tk := c.PostForm("tokens")
 
-	fs, err := geo.DecodeGeoJSON(gJSON)
+	maxLevelCircle, err := strconv.Atoi(c.PostForm("max_level_circle"))
 
 	if err != nil {
 		c.JSON(400, gin.H{
@@ -97,33 +94,18 @@ func (u GeometryController) CheckIntersection(c *gin.Context) {
 
 	intersectsPoint, intersectsCircle := false, false
 
-	for _, f := range fs {
+	var covering s2.CellUnion
 
-		if f.Geometry.IsPolygon() {
-			for _, p := range f.Geometry.Polygon {
-				p := geo.PointsToPolygon(p)
-				covering, _, _ := geo.CoverPolygon(p, maxLevel, minLevel)
+	tokens := strings.Split(tk, ",")
 
-				if covering.IntersectsCell(cell) {
-					intersectsPoint = true
-				}
-				if covering.Intersects(circleCovering) {
-					intersectsCircle = true
-				}
-			}
-		}
-
-		if f.Geometry.IsPoint() {
-			point := geo.Point{Lat: f.Geometry.Point[1], Lng: f.Geometry.Point[0]}
-			cc, _, _ := geo.CoverPoint(point, maxLevel)
-
-			if cell.IntersectsCell(cc) {
-				intersectsPoint = true
-			}
-			if circleCovering.IntersectsCell(cc) {
-				intersectsCircle = true
-			}
-		}
+	for _, t := range tokens {
+		covering = append(covering, s2.CellIDFromToken(t))
+	}
+	if covering.IntersectsCell(cell) {
+		intersectsPoint = true
+	}
+	if covering.Intersects(circleCovering) {
+		intersectsCircle = true
 	}
 
 	c.JSON(200, gin.H{

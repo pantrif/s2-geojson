@@ -96,12 +96,11 @@ func TestCheckIntersection(t *testing.T) {
 	assert.Equal(t, 400, w.Result().StatusCode)
 
 	data := url.Values{}
-	data.Set("max_level_geojson", "5")
-	data.Set("min_level_geojson", "2")
 	data.Set("radius", "1000")
+	data.Set("max_level_circle", "12")
 	data.Set("lat", "35.5666")
 	data.Set("lng", "23.4444")
-	data.Set("geojson", string(validJSON))
+	data.Set("tokens", "48761ac,48761b4")
 	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/check_intersection", strings.NewReader(data.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
