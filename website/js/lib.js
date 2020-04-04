@@ -1,7 +1,8 @@
 
-let map, geoJsonLayer, geoJsonEditor, marker, circleLayer;
+let map, geoJsonEditor, marker, circleLayer, drawnItems;
 let polygon_cells = [];
 let circle_cells = [];
+let geoJsonLayers = [];
 
 let coverUrl = '/cover';
 let checkPointUrl = '/check_intersection';
@@ -38,6 +39,8 @@ let s2_geojson = {
         }).addTo(map);
     },
     initMapControls : function() {
+        drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
         map.addControl(
             new L.Control.Draw({
             draw: {
@@ -47,7 +50,7 @@ let s2_geojson = {
                 circlemarker: false,
             },
             edit: {
-                featureGroup: new L.FeatureGroup()
+                featureGroup: drawnItems
             }
         })
         );
@@ -93,7 +96,27 @@ let s2_geojson = {
             map.on('click', self.onMapClick);
             geoJsonEditor.on("change", self.onGeoJsonChange);
         });
+        map.on('draw:editstart', function () {
+            map.off('click', self.onMapClick);
+            geoJsonEditor.off("change", self.onGeoJsonChange);
+        });
+        map.on('draw:editstop', function () {
+            map.on('click', self.onMapClick);
+            geoJsonEditor.on("change", self.onGeoJsonChange);
+        });
+        map.on('draw:deletestart', function () {
+            map.off('click', self.onMapClick);
+            geoJsonEditor.off("change", self.onGeoJsonChange);
+        });
+        map.on('draw:deletestop', function () {
+            map.on('click', self.onMapClick);
+            geoJsonEditor.on("change", self.onGeoJsonChange);
+        });
         map.on(L.Draw.Event.CREATED, self.onDrawCreated);
+        map.on('draw:edited', self.onDrawEdited);
+        map.on('draw:deleted', function () {
+            self.clear();
+        });
     },
     onMapClick : function(e) {
 
@@ -152,28 +175,33 @@ let s2_geojson = {
         }
     },
     onDrawCreated : function(e) {
-        if (geoJsonLayer) {
-            map.removeLayer(geoJsonLayer);
-        }
-        document.getElementById("geoJsonInput").value = '';
-        geoJsonEditor.setValue("");
-
-        self.removePolygonCells();
+        self.clear();
 
         let type = e.layerType;
         if (type === 'polygon' || type === 'marker') {
-            geoJsonLayer = e.layer;
+            let layer = e.layer;
+            geoJsonLayers.push(layer);
             let json = {
                 "type": "FeatureCollection",
-                "features": [geoJsonLayer.toGeoJSON(14)]
+                "features": [layer.toGeoJSON(14)]
             };
             geoJsonEditor.setValue(JSON.stringify(json,null, 2));
             self.regionCover();
-            map.addLayer(geoJsonLayer);
+            drawnItems.addLayer(layer);
             if (type === 'polygon') {
-                map.fitBounds(geoJsonLayer.getBounds());
+                map.fitBounds(layer.getBounds());
             }
         }
+    },
+    onDrawEdited : function(e){
+        self.clear();
+        let layers = e.layers;
+        geoJsonEditor.setValue(JSON.stringify(layers.toGeoJSON(14),null, 2));
+        self.regionCover();
+        layers.eachLayer(function(layer) {
+            geoJsonLayers.push(layer);
+            drawnItems.addLayer(layer);
+        });
     },
     onGeoJsonChange : function() {
         document.getElementById("cell_tokens").value = '';
@@ -182,13 +210,16 @@ let s2_geojson = {
     GeoJsonToMap : function() {
         let v = geoJsonEditor.getValue();
 
-        if (geoJsonLayer) {
-            map.removeLayer(geoJsonLayer)
-        }
+        self.removeGeoJsonLayers();
 
-        self.regionCover();
-        geoJsonLayer = L.geoJSON(JSON.parse(v), {}).addTo(map);
-        map.fitBounds(geoJsonLayer.getBounds());
+        if (v !== '') {
+            self.regionCover();
+            let layer = L.geoJSON(JSON.parse(v), {}).eachLayer(function (layer) {
+                geoJsonLayers.push(layer);
+                drawnItems.addLayer(layer);
+            });
+            map.fitBounds(layer.getBounds());
+        }
     },
     regionCover : function() {
         self.removePolygonCells();
@@ -220,8 +251,16 @@ let s2_geojson = {
         xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xmlHttp.send(params);
     },
+    clear : function() {
+
+        self.removeGeoJsonLayers();
+        document.getElementById("geoJsonInput").value = '';
+        geoJsonEditor.setValue("");
+
+        self.removePolygonCells();
+    },
     removePolygonCells : function () {
-        for (var i = 0; i < polygon_cells.length; i++) {
+        for (let i = 0; i < polygon_cells.length; i++) {
             map.removeLayer(polygon_cells[i]);
         }
         polygon_cells = [];
@@ -231,7 +270,19 @@ let s2_geojson = {
             map.removeLayer(circle_cells[i]);
         }
         circle_cells = [];
-    }
+    },
+    removeGeoJsonLayers : function () {
+        try {
+            let layer;
+            for (let i = 0; i < geoJsonLayers.length; i++) {
+                layer = geoJsonLayers[i];
+                drawnItems.removeLayer(geoJsonLayers[i]);
+            }
+        } catch (e) {
+            console.log(e.message);
+        }
+        geoJsonLayers = [];
+    },
 };
 
 document.addEventListener("DOMContentLoaded", function() {
