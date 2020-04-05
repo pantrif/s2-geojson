@@ -3,6 +3,7 @@ let map, geoJsonEditor, marker, circleLayer, drawnItems;
 let polygon_cells = [];
 let circle_cells = [];
 let geoJsonLayers = [];
+let check_intersection = false;
 
 let coverUrl = '/cover';
 let checkPointUrl = '/check_intersection';
@@ -78,6 +79,16 @@ let s2_geojson = {
             min_level_geojson_value.innerHTML = this.value;
         };
 
+        document.getElementById("check_intersection").onchange = function(e) {
+            if (e.target.checked) {
+                map.on('click', self.onMapClick);
+            } else {
+                map.off('click', self.onMapClick);
+                self.removeCircle();
+                self.removeMarker();
+            }
+            check_intersection = e.target.checked;
+        };
         document.getElementById("lat").oninput = function() {
             self.checkPointIntersection();
         };
@@ -85,32 +96,25 @@ let s2_geojson = {
             self.checkPointIntersection();
         };
 
-        map.on('click', this.onMapClick);
         geoJsonEditor.on("change", self.onGeoJsonChange);
 
         map.on('draw:drawstart', function () {
-            map.off('click', self.onMapClick);
-            geoJsonEditor.off("change", self.onGeoJsonChange);
+           self.onDrawOffEvents();
         });
         map.on('draw:drawstop', function () {
-            map.on('click', self.onMapClick);
-            geoJsonEditor.on("change", self.onGeoJsonChange);
+            self.onDrawOnEvents();
         });
         map.on('draw:editstart', function () {
-            map.off('click', self.onMapClick);
-            geoJsonEditor.off("change", self.onGeoJsonChange);
+            self.onDrawOffEvents();
         });
         map.on('draw:editstop', function () {
-            map.on('click', self.onMapClick);
-            geoJsonEditor.on("change", self.onGeoJsonChange);
+            self.onDrawOnEvents();
         });
         map.on('draw:deletestart', function () {
-            map.off('click', self.onMapClick);
-            geoJsonEditor.off("change", self.onGeoJsonChange);
+            self.onDrawOffEvents();
         });
         map.on('draw:deletestop', function () {
-            map.on('click', self.onMapClick);
-            geoJsonEditor.on("change", self.onGeoJsonChange);
+            self.onDrawOnEvents();
         });
         map.on(L.Draw.Event.CREATED, self.onDrawCreated);
         map.on('draw:edited', self.onDrawEdited);
@@ -132,12 +136,9 @@ let s2_geojson = {
         let lat = document.getElementById("lat").value;
         let lng = document.getElementById("lng").value;
 
-        if (marker) {
-            map.removeLayer(marker)
-        }
-        if (circleLayer) {
-            map.removeLayer(circleLayer)
-        }
+        self.removeMarker();
+        self.removeCircle();
+
         marker = L.marker([lat, lng]).addTo(map);
 
         let max_level_circle = document.getElementById("max_level_circle").value;
@@ -202,6 +203,18 @@ let s2_geojson = {
             geoJsonLayers.push(layer);
             drawnItems.addLayer(layer);
         });
+    },
+    onDrawOnEvents : function() {
+        if (check_intersection) {
+            map.on('click', self.onMapClick);
+        }
+        geoJsonEditor.on("change", self.onGeoJsonChange);
+    },
+    onDrawOffEvents : function() {
+        if (check_intersection) {
+            map.off('click', self.onMapClick);
+        }
+        geoJsonEditor.off("change", self.onGeoJsonChange);
     },
     onGeoJsonChange : function() {
         document.getElementById("cell_tokens").value = '';
@@ -282,6 +295,16 @@ let s2_geojson = {
             console.log(e.message);
         }
         geoJsonLayers = [];
+    },
+    removeMarker : function () {
+        if (marker) {
+            map.removeLayer(marker)
+        }
+    },
+    removeCircle : function () {
+        if (circleLayer) {
+            map.removeLayer(circleLayer)
+        }
     },
 };
 
