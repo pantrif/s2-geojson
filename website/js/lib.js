@@ -85,6 +85,7 @@ let s2_geojson = {
             } else {
                 map.off('click', self.onMapClick);
                 self.removeCircle();
+                self.removeCircleCells();
                 self.removeMarker();
             }
             check_intersection = e.target.checked;
